@@ -1,6 +1,6 @@
 {
-  "name": "@mitchellkager/pi-web",
-  "version": "0.10.0",
+  "name": "@mkager/pi-web",
+  "version": "0.10.3",
   "description": "Web UI for the pi coding agent",
   "homepage": "https://github.com/mitchellkager/pi-web#readme",
   "repository": {
