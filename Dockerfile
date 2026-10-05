@@ -33,7 +33,9 @@ RUN mkdir -p /etc/apt/keyrings \
 WORKDIR /app
 
 # Dependencies first so npm ci is layer-cached across source changes.
+# bin/ is copied too: the postinstall hook (prepare-terminal.js) lives there.
 COPY package.json package-lock.json ./
+COPY bin/ ./bin/
 RUN npm ci
 
 # App sources, then the production Next.js bundle (next build --webpack).
