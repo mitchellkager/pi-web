@@ -38,6 +38,11 @@ COPY package.json package-lock.json ./
 COPY bin/ ./bin/
 RUN npm ci
 
+# qmd: search backend required by the pi-memory extension (memory_search /
+# semantic search). pi-memory resolves it via the `qmd` binary on PATH;
+# a global install lands in /usr/local/bin, which is on the default PATH.
+RUN npm install -g @tobilu/qmd
+
 # App sources, then the production Next.js bundle (next build --webpack).
 COPY . .
 RUN npm run build
