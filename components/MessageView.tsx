@@ -1059,14 +1059,9 @@ export function ThinkingBlock({ block, duration, sessionId, entryId, blockIndex 
       <CollapseTopBar
         expanded={expanded}
         onToggle={() => setExpanded((v) => !v)}
+        prefix={<ThinkingIcon active={expanded} />}
         label={
-          preview && !expanded ? (
-            <>
-              <ThinkingIcon active={expanded} /> <span style={{ color: "var(--text-dim)" }}>{preview}</span>
-            </>
-          ) : (
-            <ThinkingIcon active={expanded} />
-          )
+          preview && !expanded ? <span style={{ color: "var(--text-dim)" }}>{preview}</span> : null
         }
         meta={duration !== undefined ? `${duration}s` : undefined}
         ariaLabel={t("i18n.thinking")}
