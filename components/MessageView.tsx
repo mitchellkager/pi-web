@@ -1070,6 +1070,7 @@ export function ThinkingBlock({ block, duration, sessionId, entryId, blockIndex 
         }
         meta={duration !== undefined ? `${duration}s` : undefined}
         ariaLabel={t("i18n.thinking")}
+        style={{ padding: "6px 10px" }}
       />
       {expanded && (
         <>
