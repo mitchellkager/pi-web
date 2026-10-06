@@ -23,11 +23,12 @@ Typecheck: `node_modules/.bin/tsc --noEmit` · Lint: `npm run lint` · Tests: `n
 
 ## Branching (fork workflow)
 
-Remotes: `origin` = our fork, `upstream` = agegr/pi-web. `downstream` is the deployment branch and the end product of the fork; the container is built from it.
+Remotes: `origin` = our fork, `upstream` = agegr/pi-web. `upstream` is tracked 1:1 with the original repo and never pushed to — it changes only when one of our PRs merges. `downstream` is the deployment branch and the end product of the fork; the tofulab stack is built and consumed from it.
 
-- **Feature branches are cut from `upstream/main`, not from `downstream`** — each feature branch may later be submitted as a PR against upstream, and branching from `downstream` would pollute the PR diff with downstream-only commits. Branches cut from `downstream` need their feature commits cherry-picked onto a fresh `upstream/main`-based branch to become PR-clean.
+- **Every new feature lives on its own branch, cut from `upstream/main`, not from `downstream`** — each feature branch may later be submitted as a PR against upstream, and branching from `downstream` would pollute the PR diff with downstream-only commits. Branches cut from `downstream` need their feature commits cherry-picked onto a fresh `upstream/main`-based branch to become PR-clean.
+- **`downstream` merges all feature branches** and may also carry small tofulab-specific tweaks committed directly off feature branches. Such tweaks never go into feature branches, so they can't leak into upstream PRs.
 - Flow: `git fetch upstream` → `git checkout -b <feature> upstream/main` → develop and verify → merge into `downstream` (fast-forward when possible) → push both branches → redeploy.
-- To upstream a feature: push its branch to `origin` and open a PR `origin:<feature> → upstream:main`; once it merges, sync `downstream` with `upstream/main`.
+- To upstream a feature: push its branch to `origin` and open a PR `origin:<feature> → upstream:main`; once it merges, sync `downstream` with `upstream/main` (the feature commits then arrive via upstream; local tofulab tweaks stay as-is).
 
 ---
 
