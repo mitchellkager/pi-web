@@ -21,6 +21,16 @@ Typecheck: `node_modules/.bin/tsc --noEmit` · Lint: `npm run lint` · Tests: `n
 
 ---
 
+## Branching (fork workflow)
+
+Remotes: `origin` = our fork, `upstream` = agegr/pi-web. `downstream` is the deployment branch and the end product of the fork; the container is built from it.
+
+- **Feature branches are cut from `upstream/main`, not from `downstream`** — each feature branch may later be submitted as a PR against upstream, and branching from `downstream` would pollute the PR diff with downstream-only commits. Branches cut from `downstream` need their feature commits cherry-picked onto a fresh `upstream/main`-based branch to become PR-clean.
+- Flow: `git fetch upstream` → `git checkout -b <feature> upstream/main` → develop and verify → merge into `downstream` (fast-forward when possible) → push both branches → redeploy.
+- To upstream a feature: push its branch to `origin` and open a PR `origin:<feature> → upstream:main`; once it merges, sync `downstream` with `upstream/main`.
+
+---
+
 ## Architecture
 
 - **Browsing** (read-only, no AgentSession): `GET /api/sessions` lists `~/.pi/agent/sessions/`; `GET /api/sessions/[id]` reads the `.jsonl` through SDK `SessionManager` helpers and `lib/session-reader.ts`, or an open wrapper's in-memory `SessionManager`. `GET /api/agent/running` snapshots the running ids.
