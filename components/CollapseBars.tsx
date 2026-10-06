@@ -46,7 +46,7 @@ export function CollapseUpChevron({ size = 12 }: { size?: number }) {
   );
 }
 
-export function CollapseTopBar({ expanded, onToggle, label, meta, ariaLabel, title, style }: {
+export function CollapseTopBar({ expanded, onToggle, label, meta, ariaLabel, title, style, prefix }: {
   expanded: boolean;
   /** Omit for sections with nothing to expand — rendered as a static header. */
   onToggle?: () => void;
@@ -55,9 +55,12 @@ export function CollapseTopBar({ expanded, onToggle, label, meta, ariaLabel, tit
   ariaLabel?: string;
   title?: string;
   style?: CSSProperties;
+  /** Rendered before the label, centered on the row (e.g. the thinking icon). */
+  prefix?: ReactNode;
 }) {
   const inner = (
     <>
+      {prefix}
       <span className="collapse-bar-label">{label}</span>
       {meta != null && <span className="collapse-bar-meta">{meta}</span>}
       <CollapseChevron expanded={expanded} />
