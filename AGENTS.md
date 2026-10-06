@@ -6,7 +6,7 @@
 npm run dev   # port 30141
 ```
 
-Typecheck: `node_modules/.bin/tsc --noEmit` · Lint: `npm run lint`
+Typecheck: `node_modules/.bin/tsc --noEmit` · Lint: `npm run lint` · Tests: `node --test` — expect 7 environment-dependent failures (`mcp-test`, `models-config/test` route, rpc idle/shutdown); they fail on clean `main` too.
 
 **Never run `next build` during dev**: it pollutes `.next/` and breaks `npm run dev`.
 
@@ -16,6 +16,7 @@ Typecheck: `node_modules/.bin/tsc --noEmit` · Lint: `npm run lint`
 - A browser-only `Module ... factory is not available` overlay usually means that tab has a stale Turbopack/HMR graph, not a broken server or source. Use the browser's explicit reload, then compare the server log and a direct HTTP/API request.
 - Restart only when the failure reproduces from a fresh page and the server-side checks fail too: stop that exact dev process gracefully, move `.next` into a `mktemp -d` backup, restart with `npm run dev`.
 - Never fall back to `next dev --webpack`: the dev graph can fail on `undici` imports such as `node:console`. Development uses Turbopack.
+- A deployed UI that looks stale after a redeploy is almost never the PWA service worker: hashed chunks miss the SW cache and HTML is `no-cache`. Verify the image actually rebuilt first (`docker images` created-at + the deploy log).
 - `next dev` may append a generated `BEGIN:nextjs-agent-rules` block to `AGENTS.md`. It is tooling output: check `git status` and keep it out of unrelated commits.
 
 ---
