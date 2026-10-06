@@ -154,6 +154,7 @@ function SafeMarkdownBody({ children, className, ...props }: React.ComponentProp
 // Cap the user "sent" bubble's height so an abnormally long message does not
 // push the conversation off screen; overflow scrolls inside the bubble.
 const USER_BUBBLE_MAX_HEIGHT = 300;
+const TOOL_OUTPUT_MAX_HEIGHT = 400;
 
 function loadThinkingContent(sessionId: string, entryId: string, blockIndex: number): Promise<string> {
   const key = `${sessionId}:${entryId}:${blockIndex}`;
@@ -1611,7 +1612,7 @@ function PairedResult({ text, isEmpty, isError }: {
           fontSize: "calc(12px + var(--chat-font-size-offset, 0px))",
           lineHeight: 1.5,
           overflow: "auto",
-          maxHeight: 400,
+          maxHeight: TOOL_OUTPUT_MAX_HEIGHT,
           background: "var(--bg)",
           whiteSpace: "pre-wrap",
           wordBreak: "break-all",
@@ -1674,30 +1675,32 @@ function CompactionMessageView({ message }: { message: CustomMessage }) {
         />
         {summaryExpanded && (
           <>
-            <div style={{ padding: "11px 13px 0" }}>
-              {bodyChars > 0 ? (
-                <pre
-                  style={{
-                    margin: 0,
-                    padding: "8px 10px",
-                    color: "var(--text-muted)",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "calc(11px + var(--chat-font-size-offset, 0px))",
-                    lineHeight: 1.5,
-                    overflow: "auto",
-                    background: "var(--bg-subtle)",
-                    borderTop: "1px solid var(--border)",
-                    whiteSpace: "pre-wrap",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {parsedSummary.body}
-                </pre>
-              ) : (
-                <span style={{ color: "var(--text-dim)", fontSize: 12 }}>{t("i18n.noSummary")}</span>
-              )}
+            <div style={{ maxHeight: TOOL_OUTPUT_MAX_HEIGHT, overflow: "auto" }}>
+              <div style={{ padding: "11px 13px 0" }}>
+                {bodyChars > 0 ? (
+                  <pre
+                    style={{
+                      margin: 0,
+                      padding: "8px 10px",
+                      color: "var(--text-muted)",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "calc(11px + var(--chat-font-size-offset, 0px))",
+                      lineHeight: 1.5,
+                      overflow: "auto",
+                      background: "var(--bg-subtle)",
+                      borderTop: "1px solid var(--border)",
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {parsedSummary.body}
+                  </pre>
+                ) : (
+                  <span style={{ color: "var(--text-dim)", fontSize: 12 }}>{t("i18n.noSummary")}</span>
+                )}
+              </div>
+              <CompactionFileMetadata readFiles={parsedSummary.readFiles} modifiedFiles={parsedSummary.modifiedFiles} />
             </div>
-            <CompactionFileMetadata readFiles={parsedSummary.readFiles} modifiedFiles={parsedSummary.modifiedFiles} />
             <CollapseBottomBar onCollapse={() => setSummaryExpanded(false)} />
           </>
         )}
