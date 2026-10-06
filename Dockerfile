@@ -30,6 +30,17 @@ RUN mkdir -p /etc/apt/keyrings \
     && apt-get install -y --no-install-recommends docker-ce-cli docker-compose-plugin \
     && rm -rf /var/lib/apt/lists/*
 
+# GitHub CLI (gh): git/GitHub tooling for the agent (issue/PR work, repo
+# browsing). Same per-release keyring + apt repo pattern as Docker above;
+# the keyring comes from a pinned release, the repo tracks current.
+RUN curl -fsSL https://github.com/cli/cli/releases/download/v2.102.0/github-cli-archive-keyring.gpg \
+        | gpg --dearmor -o /etc/apt/keyrings/githubcli.gpg \
+    && echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/githubcli.gpg] https://pkg.github.com/apt stable main" \
+        > /etc/apt/sources.list.d/github-cli.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends gh \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # Dependencies first so npm ci is layer-cached across source changes.
