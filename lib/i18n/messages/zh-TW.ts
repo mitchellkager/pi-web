@@ -52,6 +52,7 @@ export const zhTWLocale: LocalePlugin = {
     "settings.enterSendModeEnter": "Enter",
     "settings.enterSendModeCtrlEnter": "Ctrl/Cmd+Enter",
     "settings.quoteSelection": "選取文字時顯示提問浮窗",
+    "settings.chatMinimap": "回合小地圖側欄",
     "settings.languageDescription": "選擇整個介面使用的語言。",
     "settings.shellTool": "Shell 工具",
     "settings.shellToolDescription": "選擇模型執行命令時使用的 Shell。直接輸入的 ! 和 !! 命令仍使用 Bash。",

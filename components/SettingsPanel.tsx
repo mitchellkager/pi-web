@@ -77,7 +77,7 @@ export function SettingsSectionIcon({ section, size = 16, strokeWidth = 1.8 }: {
 function GeneralSettings({ sessionId, onSessionReloaded, quoteSelectionEnabled, onQuoteSelectionChange }: Pick<Props, "sessionId" | "onSessionReloaded" | "quoteSelectionEnabled" | "onQuoteSelectionChange">) {
   const { locale, setLocale, supportedLocales, t } = useI18n();
   const { preference, setThemePreference } = useTheme();
-  const { width: chatContentWidth, setWidth: setChatContentWidth, fontSize, setFontSize } = useChatAppearance();
+  const { width: chatContentWidth, setWidth: setChatContentWidth, fontSize, setFontSize, minimapVisible, setMinimapVisible } = useChatAppearance();
   const enterSendMode = useEnterSendMode();
   const [shellSettings, setShellSettings] = useState<ToolSettingsResponse | null>(null);
   const [shellSaving, setShellSaving] = useState(false);
@@ -274,6 +274,14 @@ function GeneralSettings({ sessionId, onSessionReloaded, quoteSelectionEnabled, 
                 setThinkingExpandedByDefault(enabled);
                 setThinkingExpanded(enabled);
               }}
+            />
+          </div>
+          <div className="settings-chat-option settings-chat-switch-option">
+            <span>{t("settings.chatMinimap")}</span>
+            <ConfigSwitch
+              checked={minimapVisible}
+              label={t("settings.chatMinimap")}
+              onChange={(enabled) => setMinimapVisible(enabled)}
             />
           </div>
           <div className="settings-chat-option settings-chat-switch-option">

@@ -10,16 +10,26 @@ export const CHAT_CONTENT_FONT_SIZE_DEFAULT = 14;
 export const CHAT_CONTENT_FONT_SIZE_MIN = 12;
 export const CHAT_CONTENT_FONT_SIZE_MAX = 24;
 export const CHAT_CONTENT_FONT_SIZE_STORAGE_KEY = "pi-chat-content-font-size";
+export const CHAT_MINIMAP_ENABLED_DEFAULT = true;
+export const CHAT_MINIMAP_STORAGE_KEY = "pi-chat-minimap-visible";
 
 interface ChatAppearance {
   width: number;
   fontSize: number;
+  minimapVisible: boolean;
 }
 
 const DEFAULT_APPEARANCE: ChatAppearance = {
   width: CHAT_CONTENT_WIDTH_DEFAULT,
   fontSize: CHAT_CONTENT_FONT_SIZE_DEFAULT,
+  minimapVisible: CHAT_MINIMAP_ENABLED_DEFAULT,
 };
+
+/** Only an explicit "0"/"false" stored value disables the minimap, so a
+ *  missing value means the built-in default stays on. */
+export function parseMinimapEnabled(value: string | null): boolean {
+  return value !== "0" && value !== "false";
+}
 let appearance: ChatAppearance | null = null;
 const listeners = new Set<() => void>();
 
@@ -55,6 +65,7 @@ function getSnapshot(): ChatAppearance {
     appearance = {
       width: clampChatContentWidth(readStoredPreference(CHAT_CONTENT_WIDTH_STORAGE_KEY)),
       fontSize: clampChatContentFontSize(readStoredPreference(CHAT_CONTENT_FONT_SIZE_STORAGE_KEY)),
+      minimapVisible: parseMinimapEnabled(readStoredPreference(CHAT_MINIMAP_STORAGE_KEY)),
     };
     applyAppearance(appearance);
   }
@@ -83,8 +94,17 @@ function setPreference(key: keyof ChatAppearance, value: number): void {
 
 const setWidth = (value: number) => setPreference("width", value);
 const setFontSize = (value: number) => setPreference("fontSize", value);
+const setMinimapVisible = (visible: boolean) => {
+  appearance = { ...getSnapshot(), minimapVisible: visible };
+  try {
+    window.localStorage.setItem(CHAT_MINIMAP_STORAGE_KEY, visible ? "1" : "0");
+  } catch {
+    // Best-effort browser preference persistence.
+  }
+  listeners.forEach((listener) => listener());
+};
 
 export function useChatAppearance() {
   const snapshot = useSyncExternalStore(subscribe, getSnapshot, () => DEFAULT_APPEARANCE);
-  return { ...snapshot, setWidth, setFontSize };
+  return { ...snapshot, setWidth, setFontSize, setMinimapVisible };
 }

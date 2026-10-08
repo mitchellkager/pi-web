@@ -9,7 +9,7 @@ const settingsPanel = await readFile(new URL("./SettingsPanel.tsx", import.meta.
 const globals = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
 const chatAppearanceHook = await readFile(new URL("../hooks/useChatAppearance.ts", import.meta.url), "utf8");
 const jiti = createJiti(import.meta.url);
-const { clampChatContentWidth, clampChatContentFontSize } = await jiti.import("../hooks/useChatAppearance.ts");
+const { clampChatContentWidth, clampChatContentFontSize, parseMinimapEnabled } = await jiti.import("../hooks/useChatAppearance.ts");
 
 const widthVariable = /var\(--chat-content-max-width, 820px\)/g;
 
@@ -38,6 +38,25 @@ test("chat width validation preserves the default and supported range", () => {
   assert.equal(clampChatContentWidth(700), 820);
   assert.equal(clampChatContentWidth(1104), 1104);
   assert.equal(clampChatContentWidth(2400), 2000);
+});
+
+test("the minimap preference defaults on and only an explicit off value disables it", () => {
+  assert.equal(parseMinimapEnabled(null), true);
+  assert.equal(parseMinimapEnabled(""), true);
+  assert.equal(parseMinimapEnabled("1"), true);
+  assert.equal(parseMinimapEnabled("true"), true);
+  assert.equal(parseMinimapEnabled("0"), false);
+  assert.equal(parseMinimapEnabled("false"), false);
+});
+
+test("General chat settings own the minimap visibility switch", () => {
+  assert.match(chatAppearanceHook, /pi-chat-minimap-visible/);
+  assert.match(chatAppearanceHook, /setMinimapVisible/);
+  assert.match(settingsPanel, /settings\.chatMinimap/);
+  assert.match(settingsPanel, /setMinimapVisible\(enabled\)/);
+  assert.match(chatWindow, /const \{ minimapVisible \} = useChatAppearance\(\)/);
+  assert.match(chatWindow, /!minimapVisible \? null : \(/);
+  assert.match(chatInput, /minimapVisible \? 52 : 16/);
 });
 
 test("chat font size preserves the default and bounds stored or supplied values", () => {

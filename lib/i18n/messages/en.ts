@@ -52,6 +52,7 @@ export const enLocale: LocalePlugin = {
     "settings.enterSendModeEnter": "Enter",
     "settings.enterSendModeCtrlEnter": "Ctrl/Cmd+Enter",
     "settings.quoteSelection": "Show actions for selected text",
+    "settings.chatMinimap": "Turn minimap sidebar",
     "settings.languageDescription": "Choose the language used throughout the interface.",
     "settings.shellTool": "Shell tool",
     "settings.shellToolDescription": "Choose which shell the model uses for commands. Direct ! and !! commands still use Bash.",
