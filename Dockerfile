@@ -31,15 +31,11 @@ RUN mkdir -p /etc/apt/keyrings \
     && rm -rf /var/lib/apt/lists/*
 
 # GitHub CLI (gh): git/GitHub tooling for the agent (issue/PR work, repo
-# browsing). Same per-release keyring + apt repo pattern as Docker above;
-# the keyring comes from a pinned release, the repo tracks current.
-RUN curl -fsSL https://github.com/cli/cli/releases/download/v2.102.0/github-cli-archive-keyring.gpg \
-        | gpg --dearmor -o /etc/apt/keyrings/githubcli.gpg \
-    && echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/githubcli.gpg] https://pkg.github.com/apt stable main" \
-        > /etc/apt/sources.list.d/github-cli.list \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends gh \
-    && rm -rf /var/lib/apt/lists/*
+# browsing). The cli/cli releases no longer ship the archive keyring GPG,
+# so install the pinned release .deb directly instead of the apt repo.
+RUN curl -fsSL -o /tmp/gh.deb https://github.com/cli/cli/releases/download/v2.102.0/gh_2.102.0_linux_amd64.deb \
+    && dpkg -i /tmp/gh.deb \
+    && rm /tmp/gh.deb
 
 WORKDIR /app
 
