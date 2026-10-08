@@ -13,3 +13,8 @@
 - `hooks/useAudio.ts` stores the toggle in `localStorage` as `pi-sound-enabled` and reuses one `AudioContext`.
 - Autoplay policy requires unlocking sound from a user gesture: `ChatInput` calls the unlock hook from interactive controls, and `ChatWindow` plays the tone from `onAgentEnd`.
 - A stopped run is not a finished one (pi 1.1's `agent_settled.aborted`, which pi's own status reporting reads as idle, not done): `onAgentEnd({ aborted })` plays no tone and AppShell shows no browser notification, and the wrapper sends no "Task finished" push (`lastRunAborted`). The wrapper's `prompt_done` carries `aborted: true` for it, since the client finishes a prompt it sent on `prompt_done`, not `agent_settled`.
+
+## Chat display preferences (`hooks/useChatAppearance.ts`)
+- Content width, font size, and minimap visibility are browser-wide `localStorage` settings (`pi-chat-content-width`, `pi-chat-content-font-size`, `pi-chat-minimap-visible`) read once at mount and applied in `ChatWindow` / `ChatInput`.
+- Minimap visibility defaults on; only an explicit `"0"`/`"false"` disables it. When off, `ChatWindow` renders no `ChatMinimap` and `ChatInput` drops the 52px right padding (16px) that clears the node column — both must stay in sync, so the hook exposes one `minimapVisible` used by both.
+- The switch lives in General settings › Chat (`settings.chatMinimap`); the appearance section must not grow chat display controls (`SettingsPanel.test.mjs` counts the rows and switches).
