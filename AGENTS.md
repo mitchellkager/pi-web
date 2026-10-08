@@ -27,7 +27,8 @@ Remotes: `origin` = our fork, `upstream` = agegr/pi-web. `upstream` is tracked 1
 
 - **Every new feature lives on its own branch, cut from `upstream/main`, not from `downstream`** — each feature branch may later be submitted as a PR against upstream, and branching from `downstream` would pollute the PR diff with downstream-only commits. Branches cut from `downstream` need their feature commits cherry-picked onto a fresh `upstream/main`-based branch to become PR-clean.
 - **`downstream` merges all feature branches** and may also carry small tofulab-specific tweaks committed directly off feature branches. Such tweaks never go into feature branches, so they can't leak into upstream PRs.
-- Flow: `git fetch upstream` → `git checkout -b <feature> upstream/main` → develop and verify → merge into `downstream` (fast-forward when possible) → push both branches → redeploy.
+- **Approval gate (user rule):** never merge into `downstream` — and never push to it — without the user's explicit approval of that specific change. Develop on the feature branch, verify it, then ask. The same applies to redeploying from `downstream`.
+- Flow: `git fetch upstream` → `git checkout -b <feature> upstream/main` → develop and verify → **ask the user** → merge into `downstream` (fast-forward when possible) → push both branches → redeploy.
 - To upstream a feature: push its branch to `origin` and open a PR `origin:<feature> → upstream:main`; once it merges, sync `downstream` with `upstream/main` (the feature commits then arrive via upstream; local tofulab tweaks stay as-is).
 - PRs are created with the GitHub CLI (`gh`, baked into the deployment image on the default PATH). If the token has expired, re-auth with `gh auth login -w`. Example: `gh pr create -R agegr/pi-web --base main --head mitchellkager:<feature>`.
 
